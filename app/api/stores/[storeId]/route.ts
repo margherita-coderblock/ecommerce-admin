@@ -43,8 +43,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { storeId: string } }
+  _req: Request,
+  { params }: { params: { storeId: string } } // it has to be the second argument 
 ) {
   try {
     const { userId } = auth();
