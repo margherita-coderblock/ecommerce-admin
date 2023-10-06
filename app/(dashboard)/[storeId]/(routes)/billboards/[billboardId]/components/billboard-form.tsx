@@ -1,15 +1,18 @@
 "use client";
 
 import * as z from "zod";
+import { useState } from "react";
 import { Billboard, Store } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+import { Trash } from "lucide-react";
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -19,12 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import toast from "react-hot-toast";
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
@@ -43,7 +41,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 }) => {
   const params = useParams();
   const router = useRouter();
-  const origin = useOrigin();
 
   const title = initialData ? "Edit billboard" : "Create billboard";
   const description = initialData ? "Edit a billboard" : "Create a billboard";
@@ -71,7 +68,8 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       } else {
         await axios.post(`/api/${params.storeId}/billboards`, data);
       }
-      router.refresh(); // this is going to resynchronize SettingPage server component which fetch our store and is going to call it again so in that way we are gonna get new initialData that we just updated
+      router.refresh(); 
+      router.push(`/${params.storeId}/billboards`)// this is going to resynchronize SettingPage server component which fetch our store and is going to call it again so in that way we are gonna get new initialData that we just updated
       toast.success(toastMessage);
     } catch (error) {
       toast.error("Something went wrong.");
